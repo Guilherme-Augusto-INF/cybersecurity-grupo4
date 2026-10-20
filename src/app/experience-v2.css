@@ -58,4 +58,4 @@
 
 .hero-word{display:block;max-width:100%;overflow:visible}.intro-copy h1{line-height:0}.intro-copy .primary{font-weight:400}
 
-.presenter-actions{display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin:24px 0}.presenter-actions .primary{font-size:13px;text-decoration:none}
+.presenter-actions{display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin:24px 0}.presenter-actions .primary{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:44px;padding:12px 16px;border:1px solid var(--cyan);border-radius:3px;font:500 12px var(--font-mono);text-decoration:none}.presenter-actions .primary svg{flex-shrink:0}
