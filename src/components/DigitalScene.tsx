@@ -4,7 +4,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Line } from '@react-three/drei';
 import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
-export type SceneState = {progress:number; paused:boolean; reduced:boolean};
+export type SceneState = {progress:number; paused:boolean; reduced:boolean; focus?:number; turn?:number};
 const COUNT=900;
 function target(i:number, phase:number){
   const a=i*2.39996323, z=1-2*(i+.5)/COUNT, r=Math.sqrt(1-z*z);
@@ -28,26 +28,39 @@ function Network({state}:{state:React.RefObject<SceneState>}){
   const lineMaterial=useRef<THREE.LineBasicMaterial>(null);
   const coords=useMemo(()=>new Float32Array(COUNT*3),[]);
   const lineCoords=useMemo(()=>new Float32Array(180*6),[]);
-  const targets=useMemo(()=>Array.from({length:7},(_,phase)=>Array.from({length:COUNT},(_,i)=>target(i,phase))),[]);
+  // Cache geometry in typed arrays so each scroll frame allocates no Vector3 objects.
+  const targets=useMemo(()=>Array.from({length:7},(_,phase)=>{
+    const out=new Float32Array(COUNT*3);
+    for(let i=0;i<COUNT;i++){const v=target(i,phase),k=i*3;out[k]=v.x;out[k+1]=v.y;out[k+2]=v.z;}
+    return out;
+  }),[]);
+  const lastProgress=useRef(Number.NaN);
   const {invalidate,camera}=useThree();
   useEffect(()=>{
     geometry.setAttribute('position',new THREE.BufferAttribute(coords,3));
     lineGeometry.setAttribute('position',new THREE.BufferAttribute(lineCoords,3));
     const update=()=>invalidate();window.addEventListener('sceneupdate',update);
-    const timer=setInterval(()=>{if(!state.current.paused&&!document.hidden)invalidate();},33);
-    invalidate();return()=>{clearInterval(timer);window.removeEventListener('sceneupdate',update);geometry.dispose();lineGeometry.dispose();};
+    // Render only on scene changes instead of polling the idle canvas at 30fps.
+    invalidate();return()=>{window.removeEventListener('sceneupdate',update);geometry.dispose();lineGeometry.dispose();};
   },[coords,geometry,invalidate,lineCoords,lineGeometry,state]);
-  useFrame(({clock})=>{
-    const p=Math.min(state.current.progress,6), from=Math.floor(p), to=Math.min(from+1,6); const mix=THREE.MathUtils.smoothstep(p-from,0,1);
-    const vec=new THREE.Vector3();
-    for(let i=0;i<COUNT;i++){vec.copy(targets[from][i]).lerp(targets[to][i],mix);coords.set([vec.x,vec.y,vec.z],i*3);}
-    for(let i=0;i<180;i++){const s=(i*5)%COUNT,d=(s+3)%COUNT;lineCoords.set(coords.subarray(s*3,s*3+3),i*6);lineCoords.set(coords.subarray(d*3,d*3+3),i*6+3);}
+  useFrame(()=>{
+    if(document.hidden)return;
+    const p=THREE.MathUtils.clamp(state.current.progress,0,6);
+    if(Math.abs(p-lastProgress.current)<0.00025)return;
+    lastProgress.current=p;
+    const from=Math.floor(p),to=Math.min(from+1,6),mix=THREE.MathUtils.smoothstep(p-from,0,1),a=targets[from],b=targets[to];
+    for(let k=0;k<coords.length;k++)coords[k]=a[k]+(b[k]-a[k])*mix;
+    for(let i=0;i<180;i++){
+      const src=((i*5)%COUNT)*3,dest=((i*5+3)%COUNT)*3,k=i*6;
+      lineCoords[k]=coords[src];lineCoords[k+1]=coords[src+1];lineCoords[k+2]=coords[src+2];
+      lineCoords[k+3]=coords[dest];lineCoords[k+4]=coords[dest+1];lineCoords[k+5]=coords[dest+2];
+    }
     if(geometry.attributes.position)geometry.attributes.position.needsUpdate=true;
     if(lineGeometry.attributes.position)lineGeometry.attributes.position.needsUpdate=true;
     const danger=p>.7&&p<1.7;
     const color=danger?'#FF425C':p>2.6&&p<3.8?'#A78BFF':'#55F5FF';
     material.current?.color.set(color);lineMaterial.current?.color.set(color);
-    if(group.current){group.current.rotation.y=p*.43+(state.current.paused?0:Math.sin(clock.elapsedTime*.12)*.07);group.current.rotation.z=Math.sin(p)*.12;}
+    if(group.current){group.current.rotation.y=p*.43;group.current.rotation.z=Math.sin(p)*.12;}
     camera.position.z=7.5-Math.sin(p*Math.PI)*.35;camera.position.x=Math.sin(p)*.3;
   });
   return <group ref={group} rotation={[.12,0,-.12]}>
@@ -59,5 +72,5 @@ function Network({state}:{state:React.RefObject<SceneState>}){
   </group>;
 }
 export default function DigitalScene({state}:{state:React.RefObject<SceneState>}){
-  return <Canvas dpr={[1,1.5]} camera={{position:[0,0,7.5],fov:48}} frameloop="demand" gl={{antialias:false,alpha:true,powerPreference:'low-power'}} onCreated={({gl})=>{gl.setClearColor('#05070D',0);}}><Network state={state}/></Canvas>;
+  return <Canvas dpr={[1,1.25]} camera={{position:[0,0,7.5],fov:48}} frameloop="demand" gl={{antialias:false,alpha:true,powerPreference:'low-power'}} onCreated={({gl})=>{gl.setClearColor('#05070D',0);}}><Network state={state}/></Canvas>;
 }
