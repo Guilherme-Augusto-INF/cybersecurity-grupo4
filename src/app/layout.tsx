@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
-const space=localFont({src:[{path:'../../node_modules/@fontsource/space-grotesk/files/space-grotesk-latin-400-normal.woff2',weight:'400'},{path:'../../node_modules/@fontsource/space-grotesk/files/space-grotesk-latin-500-normal.woff2',weight:'500'}],variable:'--font-space',display:'swap'});
-const inter=localFont({src:[{path:'../../node_modules/@fontsource/inter/files/inter-latin-400-normal.woff2',weight:'400'},{path:'../../node_modules/@fontsource/inter/files/inter-latin-500-normal.woff2',weight:'500'}],variable:'--font-inter',display:'swap',preload:false});
+const space=localFont({src:[{path:'../../node_modules/@fontsource/space-grotesk/files/space-grotesk-latin-400-normal.woff2',weight:'400'},{path:'../../node_modules/@fontsource/space-grotesk/files/space-grotesk-latin-500-normal.woff2',weight:'500'}],variable:'--font-space',display:'swap',preload:false});
+const inter=localFont({src:'../../node_modules/@fontsource/inter/files/inter-latin-400-normal.woff2',weight:'400',variable:'--font-inter',display:'optional'});
 const mono=localFont({src:'../../node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-400-normal.woff2',variable:'--font-jetbrains',display:'swap',preload:false});
 import './globals.css';
 import './experience-v2.css';

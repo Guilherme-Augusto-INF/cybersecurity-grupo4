@@ -52,6 +52,7 @@ Paleta e base estão em `src/app/globals.css`; a direção visual, cenas e adapt
 
 ## Arquitetura
 
+- `src/components/HeroTitle.tsx`: título vetorial com nome acessível, gerado a partir da Space Grotesk 500.
 - `src/components/Experience.tsx`: navegação, diálogos, modo apresentação e integração GSAP/Lenis.
 - `src/components/NarrativeScene.tsx`: cena principal SVG com projeção 3D procedural, 144 nós, 180 conexões, sete formas e morph contínuo, renderizada também no servidor.
 - `src/components/DigitalScene.tsx`: camada adicional R3F sob demanda, com 900 pontos; carregada após começar a explorar em desktops compatíveis.
@@ -68,7 +69,7 @@ Paleta e base estão em `src/app/globals.css`; a direção visual, cenas e adapt
 
 As aberturas usam **CSS sticky para pinning**, sem capturar a rolagem. ScrollTrigger controla progresso, profundidade e coreografia; a mesma cena vetorial com profundidade permanece entre capítulos e faz morph geométrico por um único controlador global (`src/lib/scene-progress.ts`), mantendo a forma durante a leitura e interpolando nas passagens. Lenis acompanha o ticker GSAP e é removido na limpeza; não é ativado com movimento reduzido ou ponteiro de toque.
 
-DPR limitado a 1–1,5. A camada WebGL é carregada somente depois dos primeiros 80 px de exploração, em telas acima de 820 px com WebGL2 e sem preferência de movimento reduzido. A cena SVG principal permanece completa sem GPU. As duas cenas atualizam sob demanda, em resposta à rolagem, sem um timer contínuo de renderização. A fonte dos títulos recebe prioridade; as fontes locais de apoio usam fallback ajustado e carregam sem preload. A projeção inicial renderizada no servidor coincide com o primeiro frame do cliente. As posições narrativas são armazenadas no refresh para evitar medir todos os pontos em cada frame. Não há promessa de 60 FPS: a taxa precisa ser medida no equipamento da apresentação.
+DPR limitado a 1–1,5. A camada WebGL é carregada somente depois dos primeiros 80 px de exploração, em telas acima de 820 px com WebGL2 e sem preferência de movimento reduzido. A cena SVG principal permanece completa sem GPU. As duas cenas atualizam sob demanda, em resposta à rolagem, sem um timer contínuo de renderização. O título fixo usa contornos SVG da Space Grotesk e mantém texto acessível para leitores de tela. Inter local recebe prioridade e usa `font-display: optional`: em rede lenta, um fallback ajustado permite ler sem troca tardia de letras. As outras fontes carregam sem preload. A projeção inicial renderizada no servidor coincide com o primeiro frame do cliente. As posições narrativas são armazenadas no refresh para evitar medir todos os pontos em cada frame. Não há promessa de 60 FPS: a taxa precisa ser medida no equipamento da apresentação.
 
 Timelines, eventos, ticker, Lenis, timers e buffers próprios são limpos no desmontar. Os objetos R3F declarativos são descartados por seu ciclo de vida. O limite de erro da cena mantém o conteúdo acessível em caso de falha WebGL. Diálogos nativos mantêm foco, aceitam Esc e devolvem foco ao controle de origem. Há link de salto, nomes de controles, foco visível, respostas em regiões de status, hierarquia de títulos e alternativa para movimento reduzido. A auditoria automatizada e as verificações manuais constam do relatório; não equivalem a certificação WCAG integral.
 
@@ -122,4 +123,6 @@ Build remoto READY e entrega HTTP 200 confirmados. Consulte o relatório para a 
 
 ## Auditoria desta revisão
 
-12 testes, lint, TypeScript e build aprovados; auditoria npm sem vulnerabilidades reportadas. Último PageSpeed: desempenho 100 desktop e 93 celular; acessibilidade, boas práticas e SEO 100 em ambos. Nota editorial geral: 9,5/10, com os limites detalhados em `RELATORIO-VALIDACAO.md`. A meta de 10 em todos os critérios ainda não está comprovada.
+12 testes, lint, TypeScript e build aprovados; auditoria npm sem vulnerabilidades reportadas. Último PageSpeed: desempenho 100 desktop e 98 celular; acessibilidade, boas práticas e SEO 100 em ambos. Nota editorial geral: 9,6/10, com os limites detalhados em `RELATORIO-VALIDACAO.md`. A meta de 10 em todos os critérios ainda não está comprovada.
+
+Para regenerar apenas os contornos do título, `python3 scripts/generate-title.py` lê a fonte instalada pelo npm. Esse utilitário de manutenção usa Python com `fontTools`; ele não é necessário para instalar, compilar ou apresentar o site.

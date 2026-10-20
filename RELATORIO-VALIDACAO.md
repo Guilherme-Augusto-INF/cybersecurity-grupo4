@@ -11,7 +11,7 @@ Revisão: 20/10/2026. Grupo 4 — FIEB. Seis capítulos para apresentação oral
 - Removidas legendas duplicadas; editor com partículas atrás do vidro; SQL vulnerável e parametrizado visíveis simultaneamente; textos ampliados para projeção.
 - Exemplo fictício de senha, indicador local, MFA e reinícios; AES-GCM real com chave não exportável; simulação da rede sem ataque real. Nenhum dado sensível é coletado.
 - Menu móvel com nome acessível; títulos em ordem; legendas de transição com contraste integral. Aviso de fullscreen indisponível fecha automaticamente.
-- Fontes locais com fallback ajustado e prioridade na tipografia dos títulos. WebGL só carrega após começar a explorar. Cenas inativas não são pintadas; anotações pequenas do cenário ficam reservadas ao desktop.
+- Título fixo desenhado com contornos vetoriais da Space Grotesk 500, com texto acessível preservado; ele aparece sem aguardar o arquivo da fonte. Inter local usa carregamento opcional e fallback ajustado em conexões lentas. A prioridade de fonte fica no texto de apoio. WebGL só carrega após começar a explorar. Cenas inativas não são pintadas; anotações pequenas do cenário ficam reservadas ao desktop.
 
 ## Verificação técnica
 
@@ -23,14 +23,14 @@ Revisão: 20/10/2026. Grupo 4 — FIEB. Seis capítulos para apresentação oral
 | Testes automatizados | 12 aprovados |
 | Auditoria completa npm | Zero vulnerabilidades reportadas |
 | HTML exportado | Seis capítulos, 14 pontos narrativos, sem IDs duplicados |
-| Recursos iniciais | 12 referências locais verificadas, nenhuma ausente |
+| Recursos iniciais | 11 referências locais verificadas, nenhuma ausente |
 
 Os testes abrangem autenticação AES-GCM/Unicode/adulteração/chaves, heurística de senha, quatro laboratórios, navegação, progresso legado e continuidade da direção de cena. O teste de continuidade percorre 18.500 posições e fronteiras; o teste SVG percorre morphs nos dois sentidos e movimento reduzido, sem coordenadas inválidas. Testes de componentes usam Happy DOM e não substituem renderização real.
 
 ## Verificação no navegador de produção
 
 - Aberturas, diagramas, quatro experiências, reinícios, comparação SQL e recuperação criptográfica inspecionados.
-- Rolagem normal, reversa, transição do último capítulo para o escudo, End e Page Up verificados. No encerramento, a segunda frase atinge opacidade 1 e o retorno restaura a primeira.
+- Rolagem normal, reversa, transição do último capítulo para o escudo, End e Page Up verificados. O título vetorial foi revalidado nos seis viewports e seu nome acessível foi confirmado. No encerramento, a segunda frase atinge opacidade 1 e o retorno restaura a primeira.
 - Recarga com rolagem restaurada repetida após corrigir a ordem de inicialização, mantendo os seis capítulos funcionais.
 - Modo apresentação e navegação de capítulos testados. Quando fullscreen foi negado pelo navegador remoto, a apresentação continuou utilizável. Fullscreen físico no projetor não foi certificado.
 - Nenhum erro da aplicação na revisão final observada. O navegador de teste registrou mensagens de uma extensão externa de metadados; foram distinguidas de erros do site.
@@ -52,23 +52,23 @@ O encerramento e seus controles foram vistos em 390×844 e 320×667. O painel `/
 
 ## PageSpeed — última etapa
 
-Último relatório público: https://pagespeed.web.dev/analysis/https-cybersecurity-grupo4-vercel-app/3ccdp6sdsc?form_factor=mobile
+Último relatório público: https://pagespeed.web.dev/analysis/https-cybersecurity-grupo4-vercel-app/5d5hkcsgsv?form_factor=mobile
 
 | Métrica | Celular / 4G lento | Desktop |
 | --- | --- | --- |
-| Desempenho | **93/100** | **100/100** |
+| Desempenho | **98/100** | **100/100** |
 | Acessibilidade | 100/100 | 100/100 |
 | Boas práticas | 100/100 | 100/100 |
 | SEO | 100/100 | 100/100 |
-| FCP | 2,1 s | 0,3 s |
-| LCP | 2,6 s | 0,6 s |
-| Total Blocking Time | 40 ms | 60 ms |
-| CLS | 0 | 0,001 |
-| Speed Index | 4,3 s | 0,5 s |
+| FCP | 1,2 s | 0,3 s |
+| LCP | 2,3 s | 0,5 s |
+| Total Blocking Time | 40 ms | 30 ms |
+| CLS | 0,002 | 0,008 |
+| Speed Index | 1,2 s | 0,5 s |
 
-Lighthouse 13.5.0, Chromium 153, captura de 20/10/2026 às 06:31 BRT. Durante as iterações houve resultados móveis de 92 a 96; a tabela apresenta a última medição, sem selecionar a maior nota. A incorporação experimental de CSS foi comparada, não apresentou ganho de pontuação e foi removida. A configuração final usa CSS externo e a versão estável do framework. O desenho inicial e o primeiro frame hidratado agora usam exatamente a mesma projeção, com verificação de regressão.
+Lighthouse 13.5.0, Chromium 153, captura de 20/10/2026 às 06:48 BRT. Durante as iterações houve resultados móveis de 92 a 98; a tabela apresenta a última medição, sem selecionar a maior nota. A incorporação experimental de CSS foi comparada, não apresentou ganho de pontuação e foi removida. A configuração final usa CSS externo e a versão estável do framework. O desenho inicial e o primeiro frame hidratado agora usam exatamente a mesma projeção, com verificação de regressão.
 
-O gargalo móvel restante é o tempo de renderização do título em rede limitada, além do CSS e JavaScript de inicialização apontados pelo Lighthouse. **O objetivo de 100 em desempenho móvel não foi atingido.**
+O gargalo móvel restante é o tempo de renderização do subtítulo em rede limitada, além do CSS e JavaScript de inicialização apontados pelo Lighthouse. **O objetivo de 100 em desempenho móvel não foi atingido.**
 
 São medições de laboratório Lighthouse, não garantia de velocidade em todos os dispositivos. A página ainda não tem dados de campo CrUX suficientes. Não foi medido FPS ou perfil prolongado de memória/GPU. O resultado de acessibilidade automatizada não certifica conformidade WCAG integral nem substitui teste assistivo com leitor de tela.
 
@@ -83,9 +83,9 @@ São medições de laboratório Lighthouse, não garantia de velocidade em todos
 | Interatividade | 10 no escopo testado | Quatro laboratórios locais com execução, recuperação e reinício verificados |
 | Responsividade | 9,5 | Seis viewports CSS reais; sem certificação de todos os aparelhos físicos |
 | Acessibilidade | 9,5 | 100 Lighthouse e teclado; sem auditoria integral com leitor de tela |
-| Desempenho | 9,3 | Último PageSpeed móvel 93 e desktop 100; sem perfil de FPS/GPU |
+| Desempenho | 9,8 | Último PageSpeed móvel 98 e desktop 100; sem perfil de FPS/GPU |
 | Estabilidade | 9,5 | Lint, tipos, build, 12 testes e recarga restaurada aprovados; sem ensaio prolongado |
-| Qualidade geral | **9,5** | Resultado observado, sem declarar perfeição em critérios não comprovados |
+| Qualidade geral | **9,6** | Resultado observado, sem declarar perfeição em critérios não comprovados |
 
 A meta de nota 10 em todos os critérios ainda não foi comprovada. Para fechar essa avaliação faltam atingir a meta móvel, medir fluidez/memória no hardware real e realizar ensaio cronometrado com o projetor e teste assistivo.
 
@@ -93,7 +93,7 @@ As notas de direção e acabamento são julgamento editorial limitado às cenas 
 
 ## Publicação e uso
 
-Deploy de produção `dpl_8c9LuKtHrYuTZ2cF3gni9AJiBXU2`: **READY**.
+Deploy de produção `dpl_sLcCb3z4xUAPJzBxKkBvXkDqGNEX`: **READY**.
 
 URL verificada no navegador: https://cybersecurity-grupo4.vercel.app/
 

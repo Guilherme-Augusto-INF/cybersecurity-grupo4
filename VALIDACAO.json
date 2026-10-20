@@ -11,7 +11,7 @@
   "export": {
     "chapters": 6,
     "narrative_stops": 14,
-    "initial_assets": 12,
+    "initial_assets": 11,
     "missing_assets": [],
     "duplicate_ids": false
   },
@@ -37,20 +37,22 @@
     ],
     "overflow_or_title_code_clipping": false,
     "webgl_hardware_fps_memory": "not_measured",
-    "physical_projector": "not_tested"
+    "physical_projector": "not_tested",
+    "hero_accessible_name": "CIBERSEGURANÇA.",
+    "hero_svg_viewports_passed": true
   },
   "pagespeed": {
-    "report": "https://pagespeed.web.dev/analysis/https-cybersecurity-grupo4-vercel-app/3ccdp6sdsc?form_factor=mobile",
+    "report": "https://pagespeed.web.dev/analysis/https-cybersecurity-grupo4-vercel-app/5d5hkcsgsv?form_factor=mobile",
     "mobile": {
-      "performance": 93,
+      "performance": 98,
       "accessibility": 100,
       "best_practices": 100,
       "seo": 100,
-      "fcp_seconds": 2.1,
-      "lcp_seconds": 2.6,
+      "fcp_seconds": 1.2,
+      "lcp_seconds": 2.3,
       "tbt_ms": 40,
-      "cls": 0,
-      "speed_index_seconds": 4.3
+      "cls": 0.002,
+      "speed_index_seconds": 1.2
     },
     "desktop": {
       "performance": 100,
@@ -58,18 +60,18 @@
       "best_practices": 100,
       "seo": 100,
       "fcp_seconds": 0.3,
-      "lcp_seconds": 0.6,
-      "tbt_ms": 60,
-      "cls": 0.001,
+      "lcp_seconds": 0.5,
+      "tbt_ms": 30,
+      "cls": 0.008,
       "speed_index_seconds": 0.5
     },
     "field_data": "not_available"
   },
   "production_url": "https://cybersecurity-grupo4.vercel.app/",
   "deployment": {
-    "id": "dpl_8c9LuKtHrYuTZ2cF3gni9AJiBXU2",
+    "id": "dpl_sLcCb3z4xUAPJzBxKkBvXkDqGNEX",
     "state": "READY"
   },
-  "overall_editorial_rating": 9.5,
+  "overall_editorial_rating": 9.6,
   "all_criteria_10_verified": false
 }

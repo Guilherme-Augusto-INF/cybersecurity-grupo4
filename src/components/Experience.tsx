@@ -8,6 +8,7 @@ import {ArrowDown,ArrowRight,ArrowUpRight,BookOpen,ChevronLeft,ChevronRight,Expa
 import {chapters,presenters,references,threats} from '@/data/presentation';
 import {CodeLab,CryptoLab,NetworkLab,PasswordLab} from './Labs';
 import NarrativeScene from './NarrativeScene';
+import HeroTitle from './HeroTitle';
 import {navigationTarget} from '@/lib/navigation';
 import {narrativeAt,type NarrativeRange} from '@/lib/scene-progress';
 import type {SceneState} from './DigitalScene';
@@ -111,7 +112,7 @@ export default function Experience(){
     <div className="intro-shell" data-beat={i*2}><div className="cinematic">
      <span className="depth-number" aria-hidden="true">{String(i+1).padStart(2,'0')}</span>
      <div className="intro-copy"><div className="eyebrow"><span className="tiny-line"/>{i===0?'THE INVISIBLE THREAT':chapter.eyebrow}</div>
-      {i===0?<><p className="hero-overline">O MUNDO ESTÁ CONECTADO.<br/>E AS AMEAÇAS TAMBÉM.</p><h1 id={`title-${i}`}><span>CIBER</span><span>SEGURANÇA<span className="title-dot">.</span></span></h1></>:<h2 id={`title-${i}`}>{chapter.title.map(line=><span key={line}>{line}</span>)}</h2>}
+      {i===0?<><p className="hero-overline">O MUNDO ESTÁ CONECTADO.<br/>E AS AMEAÇAS TAMBÉM.</p><HeroTitle/></>:<h2 id={`title-${i}`}>{chapter.title.map(line=><span key={line}>{line}</span>)}</h2>}
       <p className="intro-description">{chapter.intro}</p>
       {i===0?<div className="hero-actions"><button className="primary start" onClick={start}>Iniciar apresentação<ArrowUpRight size={18}/></button><span className="duration">6 CAPÍTULOS <span>·</span> 12–15 MIN</span></div>:<p className="chapter-presenter"><span>{names[i]}</span><span> / {chapter.duration}</span></p>}
      </div>
