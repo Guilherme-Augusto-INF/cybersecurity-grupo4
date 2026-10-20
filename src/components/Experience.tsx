@@ -5,10 +5,12 @@ import gsap from 'gsap';
 import {ScrollTrigger} from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
 import {ArrowDown,ArrowRight,ArrowUpRight,BookOpen,ChevronLeft,ChevronRight,Expand,Menu,Pause,Play,Settings2,Shield,ShieldCheck,X,Users,Network} from 'lucide-react';
-import {chapters,presenters,references,threats} from '@/data/presentation';
+import {chapters,references,threats} from '@/data/presentation';
 import {CodeLab,CryptoLab,NetworkLab,PasswordLab} from './Labs';
 import NarrativeScene from './NarrativeScene';
 import HeroTitle from './HeroTitle';
+import {usePresenters} from '@/hooks/usePresenters';
+import {presentersDatabase} from '@/lib/presenters';
 import {navigationTarget} from '@/lib/navigation';
 import {narrativeAt,type NarrativeRange} from '@/lib/scene-progress';
 import type {SceneState} from './DigitalScene';
@@ -17,7 +19,8 @@ class SceneBoundary extends Component<{children:ReactNode},{failed:boolean}>{sta
 export default function Experience(){
  const root=useRef<HTMLDivElement>(null),dialog=useRef<HTMLDialogElement>(null),progressBar=useRef<HTMLDivElement>(null),lenis=useRef<Lenis|null>(null);
  const scene=useRef<SceneState>({progress:0,paused:false,reduced:false,focus:0,turn:0});
- const [active,setActive]=useState(0),[presentation,setPresentation]=useState(false),[paused,setPaused]=useState(false),[reduced,setReduced]=useState(false),[webgl,setWebgl]=useState(false),[panel,setPanel]=useState<'chapters'|'references'|'settings'|'notes'>('chapters'),[names,setNames]=useState(presenters.map(p=>p.name)),[fullStatus,setFullStatus]=useState('');
+ const [active,setActive]=useState(0),[presentation,setPresentation]=useState(false),[paused,setPaused]=useState(false),[reduced,setReduced]=useState(false),[webgl,setWebgl]=useState(false),[panel,setPanel]=useState<'chapters'|'references'|'settings'|'notes'>('chapters'),[fullStatus,setFullStatus]=useState('');
+ const {names,status:namesStatus,edit:editName,restore:restoreNames}=usePresenters();
  const beatIndex=useRef(0),movingUntil=useRef(0),returnFocus=useRef<HTMLElement|null>(null);
  const jump=useCallback((index:number)=>{
    const beats=Array.from(document.querySelectorAll<HTMLElement>('[data-beat]'));const target=beats[Math.max(0,Math.min(beats.length-1,index))];if(!target)return;
@@ -141,7 +144,7 @@ export default function Experience(){
    <h2 id="panel-title">{panel==='chapters'?'Escolha um capítulo.':panel==='references'?'Conhecimento verificável.':panel==='settings'?'Seis vozes. Uma missão.':'Guia do apresentador.'}</h2>
    {panel==='chapters'&&<div className="chapter-menu">{chapters.map((c,i)=><button key={c.id} onClick={()=>{closePanel();jump(i*2);}}><span>0{i+1}</span><div>{c.short}<small>{names[i]} / {c.duration}</small></div><ArrowUpRight size={22}/></button>)}</div>}
    {panel==='references'&&<><p className="panel-description">Fontes oficiais e documentação técnica. Exemplos e dados da apresentação são fictícios. O trabalho escrito em ABNT é uma entrega separada.</p><div className="references">{references.map(([org,title,url])=><a href={url} key={url} target="_blank" rel="noreferrer"><span>{org}</span><div>{title}</div><ArrowUpRight size={18}/></a>)}</div><p className="fine">Fontes consultadas em 19/10/2026. Links externos precisam de conexão.</p></>}
-   {panel==='settings'&&<><p className="panel-description">Personalize os nomes para esta sessão. A configuração permanente fica em src/data/presentation.ts.</p><div className="name-fields">{names.map((name,i)=><label key={i}>0{i+1} / {chapters[i].short}<input value={name} maxLength={40} onChange={e=>setNames(current=>current.map((v,j)=>j===i?e.target.value:v))}/></label>)}</div><p className="fine">Teclado no modo apresentação: setas e Page Up/Down avançam entre cenas; 1–6 escolhem capítulos; N abre o roteiro; J/K rolam explicações longas; M pausa efeitos; F alterna tela cheia; Esc sai. Tab e Enter controlam demonstrações.</p></>}
+   {panel==='settings'&&<><p className="panel-description">Os nomes são carregados do Supabase. Para salvar para todos, abra a tabela presenters e edite a coluna name. Estes campos permitem uma prévia apenas nesta sessão.</p><div className="name-fields">{names.map((name,i)=><label key={i}>0{i+1} / {chapters[i].short}<input value={name} maxLength={40} onChange={e=>editName(i,e.target.value)}/></label>)}</div><div className="presenter-actions"><a className="primary" href={presentersDatabase.editor} target="_blank" rel="noopener noreferrer">Editar no Supabase<ArrowUpRight size={16}/></a><button className="text-button" onClick={restoreNames}>Recarregar nomes do banco</button></div><p className="fine" role="status">{namesStatus}</p><p className="fine">Teclado no modo apresentação: setas e Page Up/Down avançam entre cenas; 1–6 escolhem capítulos; N abre o roteiro; J/K rolam explicações longas; M pausa efeitos; F alterna tela cheia; Esc sai. Tab e Enter controlam demonstrações.</p></>}
    {panel==='notes'&&<><div className="notes-current"><span className="eyebrow">CAPÍTULO {active+1} / {names[active]} / {chapters[active].duration}</span><h3>{chapters[active].short}</h3><p>{chapters[active].notes}</p></div><p className="fine">Ritmo total sugerido: 12–13 minutos, com até 2 minutos para demonstrações e perguntas. Feche com Esc para continuar.</p></>}
    </div>
   </dialog>

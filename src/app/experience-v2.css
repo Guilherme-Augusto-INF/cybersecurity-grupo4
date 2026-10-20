@@ -57,3 +57,5 @@
 @media(max-width:820px){.scene-svg text{display:none}}
 
 .hero-word{display:block;max-width:100%;overflow:visible}.intro-copy h1{line-height:0}.intro-copy .primary{font-weight:400}
+
+.presenter-actions{display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin:24px 0}.presenter-actions .primary{font-size:13px;text-decoration:none}

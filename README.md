@@ -126,3 +126,19 @@ Build remoto READY e entrega HTTP 200 confirmados. Consulte o relatório para a 
 12 testes, lint, TypeScript e build aprovados; auditoria npm sem vulnerabilidades reportadas. Último PageSpeed: desempenho 100 desktop e 98 celular; acessibilidade, boas práticas e SEO 100 em ambos. Nota editorial geral: 9,6/10, com os limites detalhados em `RELATORIO-VALIDACAO.md`. A meta de 10 em todos os critérios ainda não está comprovada.
 
 Para regenerar apenas os contornos do título, `python3 scripts/generate-title.py` lê a fonte instalada pelo npm. Esse utilitário de manutenção usa Python com `fontTools`; ele não é necessário para instalar, compilar ou apresentar o site.
+
+
+## Integrantes no Supabase
+
+Projeto: **Ciberseguranca - Grupo 4**, região São Paulo.
+
+1. Abra https://supabase.com/dashboard/project/leqgkgrnctunqoimaqfl/editor com sua conta Supabase.
+2. Selecione a tabela `public.presenters`.
+3. Edite apenas `name`, nas linhas `chapter` 1 a 6. Use nomes de 1 a 40 caracteres.
+4. Salve e, no site, abra Configurar integrantes → Recarregar nomes do banco, ou atualize a página. Não é necessário novo deploy.
+
+A ordem dos capítulos é fixa. Os nomes serão públicos: use somente os nomes que o grupo quer exibir. O painel Supabase exige sua conta; o site não possui login administrativo próprio. Os campos no site continuam como prévia de sessão, sem salvar no banco.
+
+A integração usa `fetch` e uma chave **publishable** em `src/lib/presenters.ts`, sem novas dependências. RLS permite leitura; `anon` e `authenticated` não têm permissão de escrita. Não coloque `service_role`, senha do banco ou chave secreta no frontend. `supabase/schema.sql` documenta o esquema aplicado e serve apenas para criar um banco novo.
+
+O site renderiza nomes padrão e consulta o banco depois da hidratação, com limite de 5 segundos. Uma lista completa e validada fica em cache neste navegador para uso offline. Falhas de conexão, armazenamento bloqueado ou dados incompletos preservam os nomes locais. Edições de sessão feitas durante a consulta não são sobrescritas. O botão Recarregar descarta a prévia somente quando recebe uma lista válida. As demonstrações educativas continuam locais.
