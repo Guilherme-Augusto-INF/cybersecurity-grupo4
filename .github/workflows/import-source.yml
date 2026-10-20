@@ -1,0 +1,47 @@
+name: Importar codigo-fonte do projeto
+on:
+  push:
+    paths:
+      - .github/workflows/import-source.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: import-cybersecurity-source
+  cancel-in-progress: false
+
+jobs:
+  import-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Obter e verificar o pacote revisado
+        env:
+          SOURCE_URL: "https://d2ol7oe51mr4n9.cloudfront.net/user_3FZ1eA3ZHfFD0vlRB25H7SHuQtS/d641a057-4d47-49f9-8644-2d13eb650ddb.zip"
+          SOURCE_SHA256: "095b7181af569cc48fecf6a30db70824717659ea442a85e3281aa92b31bccf6b"
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --silent --show-error "$SOURCE_URL" -o /tmp/cybersecurity-source.zip
+          echo "$SOURCE_SHA256  /tmp/cybersecurity-source.zip" | sha256sum --check
+          mkdir -p /tmp/cybersecurity-unpacked
+          unzip -q /tmp/cybersecurity-source.zip -d /tmp/cybersecurity-unpacked
+          test -f /tmp/cybersecurity-unpacked/cybersecurity-experience/package.json
+          test -f /tmp/cybersecurity-unpacked/cybersecurity-experience/src/components/Experience.tsx
+          test -f /tmp/cybersecurity-unpacked/cybersecurity-experience/package-lock.json
+          cp -a /tmp/cybersecurity-unpacked/cybersecurity-experience/. .
+          rm -rf ./node_modules ./.next ./out ./.vercel
+      - name: Registrar arquivos originais e revisados no GitHub
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Nenhuma alteracao a registrar"
+          else
+            git commit -m "feat: importar codigo-fonte completo e revisado do grupo 4"
+            git push origin HEAD:main
+          fi
