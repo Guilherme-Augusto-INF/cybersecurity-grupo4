@@ -9,3 +9,19 @@ export function sceneProgressAt(position:number,ranges:ReadonlyArray<ChapterRang
   }
   return ranges.length;
 }
+
+export type NarrativeRange={start:number;introEnd:number;morphStart:number;end:number};
+/** Hold each chapter's illustration; morph only across its seam. One scroll owner. */
+export function narrativeAt(position:number,ranges:ReadonlyArray<NarrativeRange>){
+ const y=Number.isFinite(position)?Math.max(0,position):0;
+ let progress=ranges.length,focus=0;
+ for(let i=0;i<ranges.length;i++){
+  const r=ranges[i];
+  if(y<r.start){progress=i;break;}
+  if(y<=r.end){
+   const t=Math.max(0,Math.min(1,(y-r.morphStart)/Math.max(1,r.end-r.morphStart)));
+   progress=i+t*t*(3-2*t);focus=Math.sin(t*Math.PI)*.45;break;
+  }
+ }
+ return {progress,focus,turn:Math.sin(y/2000)*1.7+progress*.2};
+}

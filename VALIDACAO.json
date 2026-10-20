@@ -1,53 +1,75 @@
 {
-  "date": "2026-10-19",
+  "date": "2026-10-20",
   "typescript": "passed",
   "eslint": "passed",
   "production_build": "passed",
   "tests": {
-    "total": 9,
-    "passed": 9
+    "total": 12,
+    "passed": 12
   },
-  "npm_audit": {
-    "auditReportVersion": 2,
-    "vulnerabilities": {},
-    "metadata": {
-      "vulnerabilities": {
-        "info": 0,
-        "low": 0,
-        "moderate": 0,
-        "high": 0,
-        "critical": 0,
-        "total": 0
-      },
-      "dependencies": {
-        "prod": 87,
-        "dev": 328,
-        "optional": 92,
-        "peer": 0,
-        "peerOptional": 0,
-        "total": 452
-      }
-    }
-  },
+  "npm_audit_vulnerabilities": 0,
   "export": {
     "chapters": 6,
     "narrative_stops": 14,
-    "initial_assets": 10,
+    "initial_assets": 12,
     "missing_assets": [],
     "duplicate_ids": false
   },
-  "browser_visual_qa": "blocked_by_environment_policy",
-  "fps_core_web_vitals": "not_measured",
-  "production_url": "https://cybersecurity-grupo4.vercel.app",
+  "browser": {
+    "visual_qa": "passed_in_observed_scenarios",
+    "restored_scroll_reload": "passed_after_initialization_order_fix",
+    "end_opacities": [
+      0,
+      1
+    ],
+    "page_up_opacities": [
+      1,
+      0
+    ],
+    "application_errors_final": [],
+    "viewports": [
+      "1920x1080",
+      "1366x768",
+      "768x1024",
+      "390x844",
+      "360x800",
+      "320x667"
+    ],
+    "overflow_or_title_code_clipping": false,
+    "webgl_hardware_fps_memory": "not_measured",
+    "physical_projector": "not_tested"
+  },
+  "pagespeed": {
+    "report": "https://pagespeed.web.dev/analysis/https-cybersecurity-grupo4-vercel-app/3ccdp6sdsc?form_factor=mobile",
+    "mobile": {
+      "performance": 93,
+      "accessibility": 100,
+      "best_practices": 100,
+      "seo": 100,
+      "fcp_seconds": 2.1,
+      "lcp_seconds": 2.6,
+      "tbt_ms": 40,
+      "cls": 0,
+      "speed_index_seconds": 4.3
+    },
+    "desktop": {
+      "performance": 100,
+      "accessibility": 100,
+      "best_practices": 100,
+      "seo": 100,
+      "fcp_seconds": 0.3,
+      "lcp_seconds": 0.6,
+      "tbt_ms": 60,
+      "cls": 0.001,
+      "speed_index_seconds": 0.5
+    },
+    "field_data": "not_available"
+  },
+  "production_url": "https://cybersecurity-grupo4.vercel.app/",
   "deployment": {
-    "id": "dpl_CNHQKeiqTBs2z4xUyDLUJFWGRbh1",
-    "state": "READY",
-    "url": "https://cybersecurity-grupo4.vercel.app"
+    "id": "dpl_8c9LuKtHrYuTZ2cF3gni9AJiBXU2",
+    "state": "READY"
   },
-  "production_http": {
-    "html": 200,
-    "stylesheet": 200,
-    "application_javascript": 200
-  },
-  "browser_hydration": "not_verified"
+  "overall_editorial_rating": 9.5,
+  "all_criteria_10_verified": false
 }

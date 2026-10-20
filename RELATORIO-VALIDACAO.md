@@ -1,123 +1,102 @@
-> **Registro histórico:** este relatório pertence à versão original do Work. Não comprova testes, build ou deploy da revisão descrita em `CONTINUACAO-AUDITORIA.md`.
+# Relatório final — THE INVISIBLE THREAT
 
-# Relatório de validação — THE INVISIBLE THREAT
+Revisão: 20/10/2026. Grupo 4 — FIEB. Seis capítulos para apresentação oral de 12–15 minutos. Este relatório substitui as limitações e notas da primeira entrega, que ainda não tinha sido inspecionada no navegador.
 
-Data: 19/10/2026. Escopo: site escolar do Grupo 4, seis integrantes, Cibersegurança no Desenvolvimento de Sistemas. Esta entrega contém implementação completa, código-fonte, versão estática pré-compilada, README e roteiro de fala por capítulo.
+## Mudanças verificadas
 
-## Resultado comprovado
+- Cena principal procedural SVG com profundidade, sete formas, 144 nós e 180 conexões, completa sem WebGL. A camada R3F adicional preserva buffers pré-alocados e renderização sob demanda.
+- Um controlador global dirige morph, câmera e cor. As formas permanecem estáveis durante a leitura e se transformam entre capítulos. Os controladores concorrentes e a mudança abrupta de cor foram eliminados.
+- A superfície de leitura dissolve sobre o fundo, sem a borda horizontal que cortava a cena. Planos próximos e distantes se deslocam em velocidades diferentes.
+- Recalcular posições após fontes, mudança do modo apresentação, fullscreen e redimensionamento elimina a frase final incompleta. Medir antes de criar o controlador corrige recarga em posição de rolagem restaurada.
+- Removidas legendas duplicadas; editor com partículas atrás do vidro; SQL vulnerável e parametrizado visíveis simultaneamente; textos ampliados para projeção.
+- Exemplo fictício de senha, indicador local, MFA e reinícios; AES-GCM real com chave não exportável; simulação da rede sem ataque real. Nenhum dado sensível é coletado.
+- Menu móvel com nome acessível; títulos em ordem; legendas de transição com contraste integral. Aviso de fullscreen indisponível fecha automaticamente.
+- Fontes locais com fallback ajustado e prioridade na tipografia dos títulos. WebGL só carrega após começar a explorar. Cenas inativas não são pintadas; anotações pequenas do cenário ficam reservadas ao desktop.
 
-| Verificação executada | Resultado |
+## Verificação técnica
+
+| Verificação | Resultado |
 | --- | --- |
-| TypeScript (`npm run typecheck`) | Passou, sem erros |
-| ESLint (`npm run lint`) | Passou, sem erros ou avisos no código do projeto |
-| Build (`npm run build`) | Passou, Next.js 16.4.2, exportação estática |
-| Testes automatizados (`npm test`) | 9 testes passaram |
-| Auditoria completa de dependências (`npm audit`) | 0 vulnerabilidades reportadas após a remoção da cadeia de lint afetada |
-| Estrutura do HTML exportado | 6 capítulos e 14 pontos narrativos |
-| Assets iniciais do HTML | 10 referências locais verificadas; nenhum arquivo ausente |
-| IDs HTML | Nenhum ID duplicado no HTML exportado |
-| Fontes e recursos | Fontes empacotadas localmente; nenhuma CDN exigida durante a apresentação |
-| Deploy Vercel | Ver estado final no registro abaixo |
+| TypeScript | Aprovado |
+| ESLint | Aprovado |
+| Build de produção | Aprovado; exportação estática Next.js |
+| Testes automatizados | 12 aprovados |
+| Auditoria completa npm | Zero vulnerabilidades reportadas |
+| HTML exportado | Seis capítulos, 14 pontos narrativos, sem IDs duplicados |
+| Recursos iniciais | 12 referências locais verificadas, nenhuma ausente |
 
-A saída estática ocupa aproximadamente 2,93 MB sem compressão. Esse número inclui todos os arquivos, inclusive chunks 3D carregados sob demanda, HTML, fontes e metadados; não é a transferência inicial nem uma métrica de Core Web Vitals.
+Os testes abrangem autenticação AES-GCM/Unicode/adulteração/chaves, heurística de senha, quatro laboratórios, navegação, progresso legado e continuidade da direção de cena. O teste de continuidade percorre 18.500 posições e fronteiras; o teste SVG percorre morphs nos dois sentidos e movimento reduzido, sem coordenadas inválidas. Testes de componentes usam Happy DOM e não substituem renderização real.
 
-## Cobertura dos nove testes
+## Verificação no navegador de produção
 
-1. AES-GCM recupera texto em português com Unicode; chave não exportável e IV de 12 bytes.
-2. Duas cifragens geram IVs/chaves independentes; recuperar com outra chave falha.
-3. Adulterar o conteúdo cifrado é rejeitado pela autenticação do AES-GCM.
-4. Heurística de senha identifica padrões comuns e distingue comprimento/diversidade.
-5. Componente da rede avança pelos quatro passos, bloqueia com defesa e reinicia.
-6. Componente de senha responde ao campo, ativa segundo fator e reinicia sem persistência.
-7. Comparação SQL alterna concatenação/parâmetros e restaura o exemplo inicial.
-8. Laboratório de criptografia cifra, recupera e reinicia usando a Web Crypto real.
-9. Mapeamento de teclado avança/retrocede em pontos definidos, escolhe capítulos, respeita limites e adapta o último ponto ao movimento reduzido.
+- Aberturas, diagramas, quatro experiências, reinícios, comparação SQL e recuperação criptográfica inspecionados.
+- Rolagem normal, reversa, transição do último capítulo para o escudo, End e Page Up verificados. No encerramento, a segunda frase atinge opacidade 1 e o retorno restaura a primeira.
+- Recarga com rolagem restaurada repetida após corrigir a ordem de inicialização, mantendo os seis capítulos funcionais.
+- Modo apresentação e navegação de capítulos testados. Quando fullscreen foi negado pelo navegador remoto, a apresentação continuou utilizável. Fullscreen físico no projetor não foi certificado.
+- Nenhum erro da aplicação na revisão final observada. O navegador de teste registrou mensagens de uma extensão externa de metadados; foram distinguidas de erros do site.
 
-Os testes de componentes usam React e Happy DOM. Eles verificam comportamento de estado e eventos em um DOM simulado, **não substituem testes em um navegador com renderização, WebGL e tela cheia**. O teste de navegação verifica o mapeamento das teclas; a integração do teclado com fullscreen e foco real continua pendente de ensaio.
+## Responsividade — penúltima etapa
 
-## Correções realizadas antes da entrega
+Viewports CSS reais em iframe, com inspeção visual e medidas de DOM:
 
-- Eliminado bloqueio das setas quando o botão de início permanece com foco.
-- Repetições de teclas e avanços simultâneos durante uma transição não disparam avanços extras; teclas de navegação têm comportamento padrão cancelado nesse caso.
-- Editar campos de demonstração não dispara mudança de capítulo.
-- J/K permitem rolar explicações longas apenas pelo teclado, sem pular o restante do conteúdo em telas baixas.
-- Separadas as pastas de build de desenvolvimento e produção; artefatos gerados não entram no lint.
-- Corrigida a inicialização de desenvolvimento para aceitar o supervisor de prévia.
-- Adicionado servidor estático para execução local; `next start` não é usado com `output: 'export'`.
-- Adicionada imagem Open Graph PNG e base de URL definida pela Vercel.
-- Encerramento passa de uma frase à outra em uma cena sticky; movimento reduzido mostra ambas sem animação.
-- Estado criptográfico é invalidado ao editar/reiniciar; operações assíncronas antigas não restauram resultados descartados.
-- Senha permanece em memória local; indicador não calcula um tempo de quebra nem promete segurança.
-- Exemplos SQL são apenas texto, sem banco, execução ou alvo real.
-- Adicionada alternativa SVG/CSS e isolamento de erros para WebGL.
-- Removida a cadeia de dependências de lint afetada pelo alerta em braces; regras explícitas de TypeScript, Hooks e acessibilidade mantidas.
-- Região de código identificada e focável para rolagem por teclado; diálogos fecham por botão ou Esc.
-
-## Conteúdo pedagógico
-
-Divisão em seis partes com duração estimada de 2 minutos por pessoa, e 2–3 minutos para a conclusão. Cada capítulo tem roteiro acessível pelo botão e pela tecla N em modo apresentação. Total estimado de 12–13 minutos de falas, com margem até 15 minutos para interações e perguntas. Essa duração é uma orientação editorial; **não foi cronometrada em um ensaio oral**.
-
-Conceitos validados com OWASP, NIST, ANPD, texto oficial da LGPD e MDN. O material diferencia autenticação/autorização, SQL Injection/XSS, criptografia/hashing, fatores de MFA e princípios da LGPD. Não afirma que a LGPD exige uma ferramenta específica. Não usa estatísticas ou casos reais inventados. A lista de fontes está disponível no site.
-
-## Limites da validação visual e de desempenho
-
-A tentativa de conexão com o navegador local expirou. A prévia gerenciada iniciou, mas o navegador de teste bloqueou a observação pela política de acesso do ambiente. O bloqueio não foi contornado. Por isso, **não foram comprovados**:
-
-- Composição real em 1920×1080, 1366×768 e telas móveis.
-- Ausência de colisões, recortes ou sobreposições em todos os quadros e transições.
-- Rolagem rápida/reversa, pinning e integração Lenis/ScrollTrigger no navegador real.
-- Fullscreen, foco nativo de diálogos e uso integral do notebook sem mouse.
-- Funcionamento WebGL por GPU/dispositivo, contexto perdido e comportamento após longas sessões.
-- FPS, Core Web Vitals, perfil de memória e vazamentos de GPU.
-- Contraste medido, leitor de tela, zoom e conformidade WCAG integral.
-
-O código inclui adaptações, limites de DPR, alternativa móvel, redução de movimento e limpeza de recursos. Essas medidas são verificáveis por inspeção do código, mas não equivalem a resultados empíricos de desempenho. O movimento ambiente é limitado a 30 atualizações/s; frames de rolagem são solicitados separadamente. Não se afirma ter medido 60 FPS.
-
-## Avaliação de qualidade
-
-Notas máximas não são justificáveis sem inspeção visual e ensaio. As notas abaixo são **provisórias e limitadas ao que foi observado em código e testes**. “N/V” significa que não há evidência visual suficiente para atribuir uma nota honesta.
-
-| Critério | Nota | Base e limite |
+| Viewport | Página sem overflow horizontal | Títulos e código sem cortes |
 | --- | --- | --- |
-| Direção artística | N/V | Paleta, tipografia, cena procedural e composição implementadas; não vistas renderizadas |
-| Qualidade do parallax | N/V | Scrubbing, sticky, profundidade e morph implementados; fluidez real não observada |
-| Animações e transições | N/V | Timelines e continuidade implementadas; quadros de transição não inspecionados |
-| Conteúdo pedagógico | 8,5/10 | Fontes oficiais e distinções técnicas corretas; requer ensaio com o grupo |
-| Interatividade | 8,5/10 | Quatro demonstrações passaram em testes de componentes; falta validação humana no navegador |
-| Responsividade | N/V | Breakpoints e alternativas implementados; falta inspeção por viewport |
-| Acessibilidade | 7/10 | Semântica, foco, teclado e redução de movimento previstos; falta auditoria assistiva |
-| Desempenho | N/V | Lazy loading e limites de recursos implementados; sem perfil real ou CWV |
-| Estabilidade | 8/10 | Tipos, lint, build e 9 testes aprovados; integração visual não comprovada |
-| Qualidade geral | N/V | A avaliação depende da experiência renderizada e do ensaio no projetor |
+| 1920×1080 | Sim | Sim |
+| 1366×768 | Sim | Sim |
+| 768×1024 | Sim | Sim |
+| 390×844 | Sim | Sim |
+| 360×800 | Sim | Sim |
+| 320×667 | Sim | Sim |
 
-## Ensaio final no equipamento
+O encerramento e seus controles foram vistos em 390×844 e 320×667. O painel `/revisao-layout` permite repetir essas verificações. A moldura é escalada para caber no monitor de teste; as media queries recebem o viewport indicado.
 
-1. Substituir os seis nomes no arquivo de configuração ou no painel da sessão.
-2. Executar o site localmente ou abrir a URL publicada; maximizar a janela e usar Iniciar apresentação.
-3. Percorrer as aberturas e as explicações, avançar e retroceder, testar Home/End e 1–6.
-4. Confirmar que os títulos cabem e as explicações são legíveis à distância.
-5. Executar e reiniciar as quatro experiências usando Tab e Enter.
-6. Abrir o roteiro com N, fechar com Esc, pausar com M e alternar tela cheia com F.
-7. Conferir as duas frases finais; testar novamente com movimento reduzido ativado no sistema.
-8. Ensaiar as falas por 12–15 minutos e confirmar a versão local sem internet.
+## PageSpeed — última etapa
 
-O trabalho escrito em ABNT permanece uma entrega separada.
+Último relatório público: https://pagespeed.web.dev/analysis/https-cybersecurity-grupo4-vercel-app/3ccdp6sdsc?form_factor=mobile
 
-## Registro de publicação
+| Métrica | Celular / 4G lento | Desktop |
+| --- | --- | --- |
+| Desempenho | **93/100** | **100/100** |
+| Acessibilidade | 100/100 | 100/100 |
+| Boas práticas | 100/100 | 100/100 |
+| SEO | 100/100 | 100/100 |
+| FCP | 2,1 s | 0,3 s |
+| LCP | 2,6 s | 0,6 s |
+| Total Blocking Time | 40 ms | 60 ms |
+| CLS | 0 | 0,001 |
+| Speed Index | 4,3 s | 0,5 s |
 
-Primeira publicação concluída na Vercel com estado READY. URL: https://cybersecurity-grupo4.vercel.app
+Lighthouse 13.5.0, Chromium 153, captura de 20/10/2026 às 06:31 BRT. Durante as iterações houve resultados móveis de 92 a 96; a tabela apresenta a última medição, sem selecionar a maior nota. A incorporação experimental de CSS foi comparada, não apresentou ganho de pontuação e foi removida. A configuração final usa CSS externo e a versão estável do framework. O desenho inicial e o primeiro frame hidratado agora usam exatamente a mesma projeção, com verificação de regressão.
 
-Foi confirmada resposta HTTP 200 com HTML em português, título correto, seis capítulos e metadados Open Graph com a URL de produção. Isso verifica entrega HTTP, não execução de animações ou hidratação no navegador.
+O gargalo móvel restante é o tempo de renderização do título em rede limitada, além do CSS e JavaScript de inicialização apontados pelo Lighthouse. **O objetivo de 100 em desempenho móvel não foi atingido.**
 
-A primeira tentativa de deploy falhou por configurar `out` como output do adaptador Next.js. A configuração correta usa `.next`; o adaptador detecta `output: 'export'` e publica o conteúdo estático de `out/`. Essa configuração foi incluída em `vercel.json`.
+São medições de laboratório Lighthouse, não garantia de velocidade em todos os dispositivos. A página ainda não tem dados de campo CrUX suficientes. Não foi medido FPS ou perfil prolongado de memória/GPU. O resultado de acessibilidade automatizada não certifica conformidade WCAG integral nem substitui teste assistivo com leitor de tela.
 
-A auditoria completa revelou cinco alertas altos propagados por uma única dependência de desenvolvimento (`braces`, via `fast-glob` do preset Next para ESLint). O preset foi removido e substituído por configuração explícita de TypeScript, React Hooks e JSX Accessibility, eliminando essa cadeia. O site não tinha essa dependência em seu código de produção.
+## Avaliação crítica
 
-A configuração sem a cadeia vulnerável passou novamente por lint, TypeScript, nove testes e build. A auditoria completa voltou a reportar zero vulnerabilidades. A publicação dessa revisão foi concluída; a revisão final acrescenta rolagem J/K e composição compacta para projeção, com a mesma verificação técnica.
+| Critério | Nota / 10 | Evidência e limite |
+| --- | --- | --- |
+| Direção artística | 9,5 | Sete cenas próprias, hierarquia e composição revistas; julgamento editorial |
+| Parallax | 9,5 | Controle único, profundidade e fronteiras contínuas; FPS não medido |
+| Animações e transições | 9,5 | Entradas, saída, reverso e dissoluções inspecionados |
+| Conteúdo pedagógico | 9,5 | Seis roteiros e referências oficiais; falta ensaio oral com o grupo |
+| Interatividade | 10 no escopo testado | Quatro laboratórios locais com execução, recuperação e reinício verificados |
+| Responsividade | 9,5 | Seis viewports CSS reais; sem certificação de todos os aparelhos físicos |
+| Acessibilidade | 9,5 | 100 Lighthouse e teclado; sem auditoria integral com leitor de tela |
+| Desempenho | 9,3 | Último PageSpeed móvel 93 e desktop 100; sem perfil de FPS/GPU |
+| Estabilidade | 9,5 | Lint, tipos, build, 12 testes e recarga restaurada aprovados; sem ensaio prolongado |
+| Qualidade geral | **9,5** | Resultado observado, sem declarar perfeição em critérios não comprovados |
 
-Não foi criado repositório remoto: a conexão disponível permite trabalhar com repositórios existentes, mas não expôs criação de repositórios. O código-fonte e o lockfile acompanham a entrega para importação posterior.
+A meta de nota 10 em todos os critérios ainda não foi comprovada. Para fechar essa avaliação faltam atingir a meta móvel, medir fluidez/memória no hardware real e realizar ensaio cronometrado com o projetor e teste assistivo.
 
+As notas de direção e acabamento são julgamento editorial limitado às cenas observadas. Não representam uma certificação externa. A apresentação oral de 12–15 minutos ainda precisa de ensaio com os seis integrantes e o projetor real.
 
-### Confirmação da revisão final
+## Publicação e uso
 
-Deploy `dpl_CNHQKeiqTBs2z4xUyDLUJFWGRbh1`: **READY**, produção em https://cybersecurity-grupo4.vercel.app. Verificados por HTTP: página principal 200, CSS 200 e JavaScript do aplicativo 200; título e seis capítulos corretos. Lint sem avisos, TypeScript e build da revisão final aprovados. A auditoria completa reportou zero vulnerabilidades após a correção da dependência de desenvolvimento. Os nove testes de comportamento e criptografia passaram. A inspeção visual, hidratação, fullscreen e FPS em navegador continuam não verificados pelas limitações já descritas.
+Deploy de produção `dpl_8c9LuKtHrYuTZ2cF3gni9AJiBXU2`: **READY**.
+
+URL verificada no navegador: https://cybersecurity-grupo4.vercel.app/
+
+O código é consolidado em `Guilherme-Augusto-INF/cybersecurity-grupo4`, preservando o histórico e as correções anteriores de renderização sob demanda, fullscreen e teclado. As atualizações de relatório posteriores ao build não alteram o aplicativo publicado.
+
+Código-fonte, lockfile, README, configuração Vercel e testes acompanham a entrega. A pasta `out/` do pacote é pré-compilada: `node scripts/serve.mjs` permite apresentação local sem instalar dependências, com Node.js e navegador. Os links de fontes exigem internet. Os nomes continuam editáveis em `src/data/presentation.ts` ou no painel da sessão. O trabalho escrito em ABNT é uma entrega separada.

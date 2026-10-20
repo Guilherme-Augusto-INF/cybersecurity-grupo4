@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 export type SceneState = {progress:number; paused:boolean; reduced:boolean; focus?:number; turn?:number};
 const COUNT=900;
+const palette=['#55f5ff','#ff6078','#55f5ff','#ad91ff','#55f5ff','#ad91ff','#55f5ff'].map(c=>new THREE.Color(c));
 function target(i:number, phase:number){
   const a=i*2.39996323, z=1-2*(i+.5)/COUNT, r=Math.sqrt(1-z*z);
   const sphere=new THREE.Vector3(Math.cos(a)*r*2.4,z*2.4,Math.sin(a)*r*2.4);
@@ -34,7 +35,8 @@ function Network({state}:{state:React.RefObject<SceneState>}){
     for(let i=0;i<COUNT;i++){const v=target(i,phase),k=i*3;out[k]=v.x;out[k+1]=v.y;out[k+2]=v.z;}
     return out;
   }),[]);
-  const lastProgress=useRef(Number.NaN);
+  const lastProgress=useRef(Number.NaN),lastTurn=useRef(Number.NaN);
+  const color=useMemo(()=>new THREE.Color(),[]);
   const {invalidate,camera}=useThree();
   useEffect(()=>{
     geometry.setAttribute('position',new THREE.BufferAttribute(coords,3));
@@ -46,8 +48,9 @@ function Network({state}:{state:React.RefObject<SceneState>}){
   useFrame(()=>{
     if(document.hidden)return;
     const p=THREE.MathUtils.clamp(state.current.progress,0,6);
-    if(Math.abs(p-lastProgress.current)<0.00025)return;
-    lastProgress.current=p;
+    const turn=state.current.turn??0;
+    if(Math.abs(p-lastProgress.current)<0.00025&&Math.abs(turn-lastTurn.current)<0.00025)return;
+    lastProgress.current=p;lastTurn.current=turn;
     const from=Math.floor(p),to=Math.min(from+1,6),mix=THREE.MathUtils.smoothstep(p-from,0,1),a=targets[from],b=targets[to];
     for(let k=0;k<coords.length;k++)coords[k]=a[k]+(b[k]-a[k])*mix;
     for(let i=0;i<180;i++){
@@ -57,10 +60,9 @@ function Network({state}:{state:React.RefObject<SceneState>}){
     }
     if(geometry.attributes.position)geometry.attributes.position.needsUpdate=true;
     if(lineGeometry.attributes.position)lineGeometry.attributes.position.needsUpdate=true;
-    const danger=p>.7&&p<1.7;
-    const color=danger?'#FF425C':p>2.6&&p<3.8?'#A78BFF':'#55F5FF';
-    material.current?.color.set(color);lineMaterial.current?.color.set(color);
-    if(group.current){group.current.rotation.y=p*.43;group.current.rotation.z=Math.sin(p)*.12;}
+    color.copy(palette[from]).lerp(palette[to],mix);
+    material.current?.color.copy(color);lineMaterial.current?.color.copy(color);
+    if(group.current){group.current.rotation.y=p*.43+turn*.08;group.current.rotation.z=Math.sin(p)*.12;}
     camera.position.z=7.5-Math.sin(p*Math.PI)*.35;camera.position.x=Math.sin(p)*.3;
   });
   return <group ref={group} rotation={[.12,0,-.12]}>

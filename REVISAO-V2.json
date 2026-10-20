@@ -1,0 +1,36 @@
+{
+  "status": "published_and_audited",
+  "production": {
+    "id": "dpl_8c9LuKtHrYuTZ2cF3gni9AJiBXU2",
+    "state": "READY"
+  },
+  "tests": 12,
+  "pagespeed": {
+    "report": "https://pagespeed.web.dev/analysis/https-cybersecurity-grupo4-vercel-app/3ccdp6sdsc?form_factor=mobile",
+    "mobile": {
+      "performance": 93,
+      "accessibility": 100,
+      "best_practices": 100,
+      "seo": 100,
+      "fcp_seconds": 2.1,
+      "lcp_seconds": 2.6,
+      "tbt_ms": 40,
+      "cls": 0,
+      "speed_index_seconds": 4.3
+    },
+    "desktop": {
+      "performance": 100,
+      "accessibility": 100,
+      "best_practices": 100,
+      "seo": 100,
+      "fcp_seconds": 0.3,
+      "lcp_seconds": 0.6,
+      "tbt_ms": 60,
+      "cls": 0.001,
+      "speed_index_seconds": 0.5
+    },
+    "field_data": "not_available"
+  },
+  "overall_editorial_rating": 9.5,
+  "all_criteria_10_verified": false
+}

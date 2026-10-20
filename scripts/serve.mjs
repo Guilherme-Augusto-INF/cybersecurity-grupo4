@@ -10,4 +10,4 @@ const server=http.createServer(async(req,res)=>{
  const bytes=await readFile(file);res.writeHead(200,{'Content-Type':mime[path.extname(file)]||'application/octet-stream','X-Content-Type-Options':'nosniff'});res.end(req.method==='HEAD'?undefined:bytes);
  }catch{res.writeHead(404,{'Content-Type':'text/plain; charset=utf-8'});res.end('Página não encontrada.');}
 });
-server.listen(Number(process.env.PORT||4173),'127.0.0.1',()=>console.log('Apresentação local: http://localhost:'+(process.env.PORT||4173)));
+server.listen(Number(process.env.PORT||4173),process.env.PREVIEW_HOST||'127.0.0.1',()=>console.log('Apresentação local: http://localhost:'+(process.env.PORT||4173)));

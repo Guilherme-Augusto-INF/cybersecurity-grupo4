@@ -1,6 +1,6 @@
 'use client';
 import {useRef,useState} from 'react';
-import {ArrowRight, Check, Database, KeyRound, LockKeyhole, RotateCcw, Server, ShieldCheck, Smartphone, UserRound, Code2, Globe2, Eye, EyeOff} from 'lucide-react';
+import {ArrowRight, Check, Database, KeyRound, LockKeyhole, RotateCcw, Server, ShieldCheck, UserRound, Code2, Globe2, Eye, EyeOff} from 'lucide-react';
 import {inspectPassword} from '@/lib/password.mjs';
 import {encryptMessage,decryptMessage} from '@/lib/crypto';
 export function NetworkLab(){
@@ -20,8 +20,8 @@ export function PasswordLab(){
  <label htmlFor="fictional-password">Teste uma senha fictícia</label><div className="password-input"><input id="fictional-password" type={show?'text':'password'} value={password} onChange={e=>setPassword(e.target.value)} autoComplete="off" maxLength={128} placeholder="Não use sua senha real" spellCheck={false}/><button className="icon-button" aria-label={show?'Ocultar exemplo':'Mostrar exemplo'} onClick={()=>setShow(!show)}>{show?<EyeOff size={18}/>:<Eye size={18}/>}</button></div>
  <div className="strength" aria-hidden="true">{[1,2,3].map(n=><span key={n} className={password&&result.score>=n?'filled':''}/>)}</div><p className="strength-label" role="status">{result.label}</p>
  <ul className="password-checks"><li className={result.long?'pass':''}><Check size={16}/>15 ou mais caracteres</li><li className={password&&!result.predictable?'pass':''}><Check size={16}/>Sem padrões comuns detectados</li><li className={result.varied?'pass':''}><Check size={16}/>Boa diversidade de caracteres</li></ul>
- <div className="mfa-flow"><span><KeyRound size={20}/> Senha</span><span className={mfa?'factor active':'factor'}><Smartphone size={20}/>{mfa?' + Chave de segurança':'Fator único'}</span><LockKeyhole size={21}/></div>
- <div className="lab-actions"><button className="primary" aria-pressed={mfa} onClick={()=>setMfa(!mfa)}>{mfa?'Comparar sem MFA':'Adicionar segundo fator'}</button><button className="icon-button" aria-label="Reiniciar senha" onClick={()=>{setPassword('');setMfa(false);setShow(false);}}><RotateCcw size={16}/></button></div>
+ <div className="mfa-flow"><span><LockKeyhole size={20}/> Senha</span><span className={mfa?'factor active':'factor'}><KeyRound size={20}/>{mfa?' + Chave de segurança':'Fator único'}</span><LockKeyhole size={21}/></div>
+ <div className="lab-actions"><button onClick={()=>setPassword("Nebulosa!ponte-laranja47")}>Carregar exemplo</button><button className="primary" aria-pressed={mfa} onClick={()=>setMfa(!mfa)}>{mfa?'Comparar sem MFA':'Adicionar segundo fator'}</button><button className="icon-button" aria-label="Reiniciar senha" onClick={()=>{setPassword('');setMfa(false);setShow(false);}}><RotateCcw size={16}/></button></div>
  <p className="fine">Heurística educativa, sem tempo estimado de quebra. Não detecta todas as palavras ou senhas vazadas. Nada é enviado ou salvo; comprimento e diversidade não garantem segurança.</p></div>;
 }
 export function CryptoLab(){
@@ -39,4 +39,13 @@ export function CryptoLab(){
 }
 const vulnerable=`// Pseudocódigo • PostgreSQL\nconst sql =\n  "SELECT nome FROM alunos " +\n  "WHERE matricula = '" + entrada + "'";\n\nconst resultado = await db.query(sql);\n// Entrada se mistura à instrução.`;
 const safe=`// Pseudocódigo • PostgreSQL\nconst sql =\n  "SELECT nome FROM alunos " +\n  "WHERE matricula = $1";\n\nconst resultado = await db.query(sql, [entrada]);\n// Entrada é tratada como dado.`;
-export function CodeLab(){const [secure,setSecure]=useState(false);return <div className={`lab code-lab ${secure?'secure':'danger'}`}><div className="lab-top"><span>LAB / 04</span><span>COMPARAÇÃO / SEM EXECUÇÃO</span></div><div className="code-tabs" role="group" aria-label="Comparar implementações"><button aria-pressed={!secure} onClick={()=>setSecure(false)}>Vulnerável</button><button aria-pressed={secure} onClick={()=>setSecure(true)}>Protegida</button></div><div className="editor-top"><span>● ● ●</span><span>consulta.ts</span><span>{secure?'PARAMETRIZADA':'CONCATENAÇÃO'}</span></div><pre role="region" tabIndex={0} aria-label={secure?'Implementação protegida':'Implementação vulnerável'}><code>{secure?safe:vulnerable}</code></pre><p className="code-explanation" role="status">{secure?<><ShieldCheck size={20}/><span><strong>$1 recebe um valor separado.</strong> O driver mantém a estrutura SQL independente da entrada. A autorização ainda precisa ser verificada.</span></>:<><Code2 size={20}/><span><strong>+ entrada + muda o comando.</strong> Misturar texto recebido e SQL permite que uma entrada altere a intenção da consulta.</span></>}</p><div className="lab-actions"><button className="primary" onClick={()=>setSecure(!secure)}>{secure?'Rever vulnerabilidade':'Proteger consulta'}<ArrowRight size={16}/></button><button className="icon-button" aria-label="Reiniciar código" onClick={()=>setSecure(false)}><RotateCcw size={16}/></button></div></div>;}
+export function CodeLab(){
+ const [secure,setSecure]=useState(false);
+ return <div className={`lab code-lab ${secure?'secure':'danger'}`}>
+  <div className="lab-top"><span>LAB / 04</span><span>COMPARAÇÃO / SEM EXECUÇÃO</span></div>
+  <div className="code-tabs" role="group" aria-label="Comparar implementações"><button aria-pressed={!secure} onClick={()=>setSecure(false)}>Investigar a falha</button><button aria-pressed={secure} onClick={()=>setSecure(true)}>Entender a proteção</button></div>
+  <div className="code-comparison">{[{title:'Implementação vulnerável',label:'CONCATENAÇÃO',code:vulnerable,selected:!secure},{title:'Implementação protegida',label:'PARÂMETROS',code:safe,selected:secure}].map((item,i)=><div key={item.title} className={`code-pane ${item.selected?'selected':''} ${i===0?'unsafe-pane':'safe-pane'}`}><div className="editor-top"><span>{i===0?'01 / VULNERÁVEL':'02 / PROTEGIDA'}</span><span>{item.label}</span></div><pre role="region" tabIndex={0} aria-label={item.title}><code>{item.code}</code></pre></div>)}</div>
+  <p className="code-explanation" role="status">{secure?<><ShieldCheck size={20}/><span><strong>$1 recebe um valor separado.</strong> O driver mantém a estrutura SQL independente da entrada. A autorização ainda precisa ser verificada.</span></>:<><Code2 size={20}/><span><strong>+ entrada + muda o comando.</strong> Misturar texto recebido e SQL permite que uma entrada altere a intenção da consulta.</span></>}</p>
+  <div className="lab-actions"><button className="primary" onClick={()=>setSecure(!secure)}>{secure?'Rever vulnerabilidade':'Proteger consulta'}<ArrowRight size={16}/></button><button className="icon-button" aria-label="Reiniciar código" onClick={()=>setSecure(false)}><RotateCcw size={16}/></button></div>
+ </div>;
+}
